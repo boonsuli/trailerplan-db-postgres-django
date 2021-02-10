@@ -1,0 +1,37 @@
+volumes:
+  db-data:
+  pgadmin-data:
+
+services:
+  postgres:
+    restart: always
+    image: postgres:12.5-alpine
+    hostname: postgres-server
+    container_name: db-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: P@ssw0rD
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db-postgres-1-schema.sql:/docker-entrypoint-initdb.d/db-postgres-1-schema.sql
+      - ./db-postgres-2-data.sql:/docker-entrypoint-initdb.d/db-postgres-2-data.sql
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    restart: always
+    image: dpage/pgadmin4:4.30
+    hostname: pgadmin-server
+    container_name: db-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@trailerplan.com
+      PGADMIN_DEFAULT_PASSWORD: P@ssw0rD
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "postgres:postgres-server"
