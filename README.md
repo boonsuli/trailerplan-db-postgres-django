@@ -2,7 +2,7 @@
 TRAILER PLAN DATABASE WITH POSTGRESQL
 =====================================
 
-This this is the database in postgresql for the project TRAILERPLAN in https://github.com/boonsuli/trailerpplan-user.
+This is the database in postgresql for the project TRAILERPLAN in https://github.com/boonsuli/trailerpplan-user.
 It use docker compose to launch an container docker with postgresql 12.5 and the client pgadmin 4.30.
 
 First :
