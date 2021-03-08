@@ -16,8 +16,8 @@ Check the images :
 ```shell script
 $ docker images
 REPOSITORY      TAG          IMAGE ID      CREATED  SIZE
-postgres        12.5-alpine  ...           ... ago  ...MB
-dpage/pgadmin4  4.30         ...           ... ago  ...MB
+postgres        12.5-alpine  e07060185412  ... ago  158MB
+dpage/pgadmin4  4.30         7db8147d0c7b  ... ago  278MB
 ```
 
 To run an container from the images :
@@ -92,15 +92,17 @@ $ docker inspect postgres-container
                     "DriverOpts": null
 ...
 ```
- The ip address of the container postgres-container is 172.20.0.2.  
+ The ip address of the container postgres-container is __172.20.0.2__.  
 
 To create a database server in pgadmin. Use right click on Servers and create the server.
 ![alt_text](docs/images/pgadmin-menu-create-server.png)
 
-Then fill the server name to : trailerplan-server
+
+Then fill the server name to : **trailerplan-server**
+
 ![alt_text](docs/images/pgadmin-create-server-general.png)
 
-In the connection tab, fill the ip address you are get before from 'docker inspect postgres-container'
+In the connection tab, fill the IP address you are get before from 'docker inspect postgres-container'
 ![alt_text](docs/images/pgadmin-create-server-connection.png)
 
 We need also the password to access to the database from the environment file.
