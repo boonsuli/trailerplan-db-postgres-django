@@ -20,21 +20,22 @@ postgres        12.5-alpine  e07060185412  ... ago  158MB
 dpage/pgadmin4  4.30         7db8147d0c7b  ... ago  278MB
 ```
 
-To run an container from the images :
+To run an container from the images. Put -d if you want to run in background:
 ```shell script
-$ docker network create --driver bridge pgnetwork
+$ docker network create --driver bridge postgres-network
 
-$ docker run --name db-postgres -e 'POSTGRES_PASSWORD=P@ssw0rD' -v /var/lib/postgres/data --hostname='postgres-server' --network='pgnetwork' -p 5432:5432 -d postgres
+$ docker run --name postgres-container -e 'POSTGRES_PASSWORD=P@55w*rD' -v /var/lib/postgres/data --hostname='postgres-server' --network='postgres-network' -p 5432:5432 postgres:12.5-alpine
 
-$ docker run --name db-pgadmin  -e 'PGADMIN_DEFAULT_EMAIL=boonsuli@gmail.com' -e 'PGADMIN_DEFAULT_PASSWORD=P@ssw0rD' --hostname='pgadmin-server' --network='pgnetwork' -p 5050:80 -d dpage/pgadmin4
+$ docker run --name pgadmin-container  -e 'PGADMIN_DEFAULT_EMAIL=postgres@trailerplan.com' -e 'PGADMIN_DEFAULT_PASSWORD=P@55w*rD' --hostname='pgadmin-server' --network='postgres-network' -p 5050:80 dpage/pgadmin4:4.30
 ```
 
-To run the container from the root dir of the project with the docker-compose yml file :
+To run the container from the root dir of the project with the docker-compose yml file. The value of the log level is {critical, debug, error, info, warning} :
 ```shell script
-$ docker-compose --env-file ./config/env.file up
+$ docker-compose --env-file ./config/env.file --log-level debug up
 ```
 
-Access to http://localhost:5050 and use the credential : admin@trailerplan.com/P@ssw0rD
+
+Access to http://localhost:5050 and use the credential : postgres@trailerplan.com/P@55w*rD
 
 
 ```shell script
