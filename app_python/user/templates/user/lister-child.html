@@ -1,0 +1,142 @@
+<div class="col-lg-12">
+    <hr>
+    <h2 class="intro-text text-center">{{ list_title }}</h2>
+    <hr class="detail-separator">
+</div>
+
+<script>
+var csrftoken = $.cookie('csrftoken');
+$(document).on('show.bs.modal', '.modal', function (event) {
+    let button = $(event.relatedTarget) // Button that triggered the modal
+    let userId = button.data('user-id')
+
+    $.ajax({
+        url: "http://localhost:8000/users/"+userId,
+        type: "GET",
+        dataType: "json",
+        crossDomain: true,
+        username: "admin",
+        password: "P@55w*rD",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        success: function(json) {
+            console.log(json);
+            $('#id-text').val(json['id']);
+            $('#civility-text').val(json['civility']);
+            $('#firstname-text').val(json['firstName']);
+            $('#lastname-text').val(json['lastName']);
+            $('#sexe-text').val(json['sexe']);
+            $('#birthday-text').val(json['birthday']);
+            $('#mail-text').val(json['mail']);
+            $('#password-text').val(json['password']);
+            $('#city-text').val(json['city']);
+            $('#country-text').val(json['country']);
+        },
+        error: function(e) {
+            console.log(e)
+        }
+    });
+
+    let modal = $(this)
+    modal.find('.modal-title').text('Modification of the trailer number : ' + userId)
+    modal.find('.modal-body form-group form-control').val(userId)
+})
+
+function putUser() {
+
+    let dataUser = {
+        'id': $('#id-text').val(),
+        'civility': $('#civility-text').val(),
+        'firstName': $('#firstname-text').val(),
+        'lastName': $('#lastname-text').val(),
+        'sexe': $('#sexe-text').val(),
+        'birthday': $('#birthday-text').val(),
+        'mail': $('#mail-text').val(),
+        'password': $('#password-text').val(),
+        'city': $('#city-text').val(),
+        'country': $('#country-text').val(),
+    }
+
+    $.ajax({
+        url: "http://localhost:8000/users/"+$('#id-text').val()+'/',
+        type: "PUT",
+        dataType: "json",
+        data: JSON.stringify(dataUser),
+        crossDomain: true,
+        username: "admin",
+        password: "P@55w*rD",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        success: function(json) {
+            let id = $('#id-text').val();
+            let mailClass = '.user-content-'+id+' .mail-'+id;
+            let newMail = $('#mail-text').val();
+            $(mailClass).text(newMail);
+            $('#user-edition-modal').modal('hide');
+        },
+        error: function(e) {
+            console.log(e)
+        }
+    });
+}
+
+</script>
+
+{% for user in users %}
+    {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+<div class="text-left user-content-{{user.id}}">
+    <button href="detail-pop-modal2.html" class="btn btn-primary" data-toggle="modal" data-target="#user-edition-modal"
+            data-user-id="{{user.id}}">Modify</button>
+    {{user.firstName}} {{user.lastName}} - <span class="mail-{{user.id}}">{{user.mail}}</span> - {{user.country}}
+</div>
+{% endfor %}
+
+
+<div class="modal fade" id="user-edition-modal" tabindex="-1" role="dialog" aria-labelledby="user-edition-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="user-edition-modal-label">to be changed</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="PUT" class="form-edit-user" action="#">
+            <input type="hidden" class="form-control" id="id-text" value=""></input>
+            <input type="hidden" class="form-control" id="civility-text" value=""></input>
+            <input type="hidden" class="form-control" id="sexe-text" value=""></input>
+            <input type="hidden" class="form-control" id="birthday-text" value=""></input>
+            <input type="hidden" class="form-control" id="password-text" value=""></input>
+            <input type="hidden" class="form-control" id="city-text" value=""></input>
+            <div class="form-group">
+                <label for="firstname-text" class="col-form-label">Firstname:</label>
+                <input type="text" class="form-control" id="firstname-text"></input>
+            </div>
+            <div class="form-group">
+                <label for="lastname-text" class="col-form-label">Lastname:</label>
+                <input type="text" class="form-control" id="lastname-text"></input>
+            </div>
+            <div class="form-group">
+              <label for="mail-text" class="col-form-label">Mail:</label>
+              <input type="text" class="form-control" id="mail-text">
+          </div>
+            <div class="form-group">
+              <label for="country-text" class="col-form-label">Country:</label>
+              <input type="text" class="form-control" id="country-text">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" onclick="putUser()">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
