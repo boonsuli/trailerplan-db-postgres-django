@@ -154,3 +154,6 @@ python manage.py migrate --fake sessions zero
 python manage.py showmigrations
 python manage.py migrate --fake-initial
 ```
+
+/!\ unfortunately, the docker container of the python app don't work. So you can remove the service app_python in 
+docker compoose, run it and launch the python app with ``` python manage.py runserver ``` in the app_python root dir.

@@ -1,6 +1,7 @@
 volumes:
   pg-data:
   pgadmin-data:
+  app-pyhon:
 
 networks:
   postgres-network:
@@ -45,8 +46,12 @@ services:
       - "postgres:postgres-server"
 
   app_python:
-    container_name: ${APP_CONTAINER_NAME}
     hostname: ${APP_HOSTNAME}
+    container_name: ${APP_CONTAINER_NAME}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO_DB_NAME: ${DJANGO_DB_NAME}
     build:
       context: .
       dockerfile: ./docker/app_python/Dockerfile
@@ -55,7 +60,7 @@ services:
     volumes:
       - ./app_python/:/app/
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       - postgres
     networks:

@@ -11,9 +11,6 @@ RUN pip install -r requirements.txt
 # copy the content of the local src directory
 COPY app_python /app
 
-# set env variable
-ENV FLASK_ENV = "docker"
-
 # run server
 CMD [ "python", "manage.py", "migrate", "--fake", "sessions", "zero"]
 CMD [ "python", "manage.py", "showmigrations" ]
