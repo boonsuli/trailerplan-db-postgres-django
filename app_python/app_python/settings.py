@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': 'trailerplan',
         'USER': 'postgres',
         'PASSWORD': 'P@55w*rD',
-        'HOST': '172.19.0.2',
+        'HOST': '172.25.0.2',
         'PORT': '5432',
     }
 }

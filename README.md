@@ -124,3 +124,25 @@ use the password in the property : **POSTGRES_PASSWORD**
 Finally the table of P_USER is created, the schema is applied and the data is populated according to the sql script.
 
 ![alt_text](docs/images/pgadmin-p_user-schema.png)
+
+
+In the application Python, in the settings : app_python/app_python/settings.py, change the ip address :
+```shell script
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'trailerplan',
+        'USER': 'postgres',
+        'PASSWORD': 'P@55w*rD',
+        'HOST': '172.25.0.2',
+        'PORT': '5432',
+    }
+} 
+```
+
+Make the migration in python
+```shell script
+python manage.py migrate --fake sessions zero
+python manage.py showmigrations
+python manage.py migrate --fake-initial
+```

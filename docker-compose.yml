@@ -43,3 +43,20 @@ services:
       - postgres-network
     links:
       - "postgres:postgres-server"
+
+  app_python:
+    container_name: ${APP_CONTAINER_NAME}
+    hostname: ${APP_HOSTNAME}
+    build:
+      context: .
+      dockerfile: ./docker/app_python/Dockerfile
+    env_file:
+      - ./docker/config/env.dev
+    volumes:
+      - ./app_python/:/app/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
