@@ -23,6 +23,14 @@ the list of the users in pgadmin:
 the list of the users in the application:
 ![alt_text](docs/images/app-list-users.png)
 
+the pop modal when we clic to modify :
+![alt_text](docs/images/app-pop-edit-userBeforeNEW.png)
+
+the pop modal when we modify the user
+![alt_text](docs/images/app-pop-edit-userNEW.png)
+
+after clic on Save an request async is send to update in db and the field of the list is updated without refresh the page
+![alt_text](docs/images/app-list-users-updated.png)
 
 First :
 ```shell script

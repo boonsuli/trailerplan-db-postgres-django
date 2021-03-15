@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class User(models.Model):
     id = models.IntegerField('primary key', db_column='id', null=False, primary_key=True)
     civility = models.CharField('civility', db_column='civilite', max_length=10)
