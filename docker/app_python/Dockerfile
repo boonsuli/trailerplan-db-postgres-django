@@ -15,7 +15,4 @@ RUN pip install -r requirements.txt
 COPY app_python /app
 
 # run server
-CMD [ "python", "manage.py", "migrate", "--fake", "sessions", "zero"]
-CMD [ "python", "manage.py", "showmigrations" ]
-CMD [ "python", "manage.py", "migrate", "--fake-initial"]
 CMD [ "python", "manage.py", "runserver" ]
