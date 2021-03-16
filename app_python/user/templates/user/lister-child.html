@@ -11,7 +11,7 @@ $(document).on('show.bs.modal', '.modal', function (event) {
     let userId = button.data('user-id')
 
     $.ajax({
-        url: "http://localhost:8000/users/"+userId,
+        url: "http://localhost:8001/users/"+userId,
         type: "GET",
         dataType: "json",
         crossDomain: true,
@@ -61,7 +61,7 @@ function putUser() {
     }
 
     $.ajax({
-        url: "http://localhost:8000/users/"+$('#id-text').val()+'/',
+        url: "http://localhost:8001/users/"+$('#id-text').val()+'/',
         type: "PUT",
         dataType: "json",
         data: JSON.stringify(dataUser),

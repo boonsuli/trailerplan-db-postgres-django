@@ -1,3 +1,5 @@
+version: '3'
+
 volumes:
   pg-data:
   pgadmin-data:
@@ -46,12 +48,12 @@ services:
       - "postgres:postgres-server"
 
   app_python:
+    restart: always
     hostname: ${APP_HOSTNAME}
     container_name: ${APP_CONTAINER_NAME}
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DJANGO_DB_NAME: ${DJANGO_DB_NAME}
     build:
       context: .
       dockerfile: ./docker/app_python/Dockerfile
@@ -61,6 +63,7 @@ services:
       - ./app_python/:/app/
     ports:
       - "8001:8001"
+    command: python manage.py runserver 0.0.0.0:${APP_RUNNING_SERVER_PORT}
     depends_on:
       - postgres
     networks:

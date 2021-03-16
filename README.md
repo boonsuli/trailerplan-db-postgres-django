@@ -51,42 +51,64 @@ python          3.8.6-slim-buster  0f59d947500d  ... ago  113MB
 
 To run the container from the root dir of the project with the docker-compose yml file. The value of the log level is {critical, debug, error, info, warning} :
 ```shell script
-$ docker-compose --env-file ./docker/config/env.file --log-level debug up
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug up -d --build postgres &
+```
+__wait few seconds when you see 'LOG:  database system is ready to accept connections' start pgadmin and then the app_python__
+
+```shell script
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug up -d --build pgadmin &
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug up -d --build app_python &
 ```
 
+Then all the conatainer is started, we need to migrate the database and create an superuser.
+```shell script
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug run app_python python3 manage.py migrate --fake sessions zero
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug run app_python python3 manage.py showmigrations
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug run app_python python3 manage.py migrate --fake-initial
 
-Access to http://localhost:5050 and use the credential : postgres@trailerplan.com/P@55w*rD
+$ docker-compose --env-file ./docker/config/env.dev --log-level debug run app_python python3 manage.py createsuperuser
+  Username: admin
+  Email address: admin@trailerplan.com
+  Password : P@55w*rD
+  Password (again) : P@55w*rD
+```
 
+Access to http://localhost:8001/admin and use the credential : admin/P@55w*rD
+Then access to http://localhost:8001/user to see the list of user, like the screenshot before
 
+check the container docker :
 ```shell script
 $ docker-compose --env-file ./docker/config/env.dev ps
        Name                     Command              State               Ports            
 ------------------------------------------------------------------------------------------
-pgadmin-container    /entrypoint.sh                  Up      443/tcp, 0.0.0.0:5050->80/tcp
-postgres-container   docker-entrypoint.sh postgres   Up      0.0.0.0:5432->5432/tcp  
+app_python_container   python manage.py runserver ...   Up      0.0.0.0:8001->8001/tcp
+pgadmin-container      /entrypoint.sh                   Up      443/tcp, 0.0.0.0:5050->80/tcp
+postgres-container     docker-entrypoint.sh postgres    Up      0.0.0.0:5432->5432/tcp  
+```
+
+```shell script
+$ docker ps
+CONTAINER ID   IMAGE                                       COMMAND                  CREATED             STATUS             PORTS                           NAMES
+60a53e2f914e   trailerplan-db-postgres-django_app_python   "python manage.py ru…"   22 minutes ago      Up 22 minutes      0.0.0.0:8001->8001/tcp          app_python_container
+4d12ba0c157e   dpage/pgadmin4:4.30                         "/entrypoint.sh"         About an hour ago   Up About an hour   443/tcp, 0.0.0.0:5050->80/tcp   pgadmin-container
+c386ef2f5462   postgres:12.5-alpine                        "docker-entrypoint.s…"   About an hour ago   Up About an hour   0.0.0.0:5432->5432/tcp          postgres-container
 ```
 
 ```shell script
 $ docker network ls
-NETWORK ID     NAME                                       DRIVER    SCOPE
-7081b67cc9e6   bridge                                     bridge    local
-38d3331fa154   host                                       host      local
-d6b6eb4d5cef   none                                       null      local
-3f49d69013e8   trailerplan-db-django_postgres-network     bridge    local
+NETWORK ID     NAME                                             DRIVER    SCOPE
+7081b67cc9e6   bridge                                           bridge    local
+38d3331fa154   host                                             host      local
+d6b6eb4d5cef   none                                             null      local
+3f49d69013e8   trailerplan-db-postgres-django_postgres-network  bridge    local
 ```
 
 ```shell script
 $ docker volume ls
 DRIVER    VOLUME NAME
-local     trailerplan-db-postgres_pg-data
-local     trailerplan-db-postgres_pgadmin-data
-```
-
-```shell script
-$ docker ps
-CONTAINER ID   IMAGE                  COMMAND                  CREATED              STATUS              PORTS                           NAMES
-a4a14b2c36cf   dpage/pgadmin4:4.30    "/entrypoint.sh"         About a minute ago   Up About a minute   443/tcp, 0.0.0.0:5050->80/tcp   pgadmin-container
-e650842d9ac3   postgres:12.5-alpine   "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp          postgres-container
+local     trailerplan-db-postgres-django_app-pyhon
+local     trailerplan-db-postgres-django_pg-data
+local     trailerplan-db-postgres_django_pgadmin-data
 ```
 
 ```shell script
@@ -133,27 +155,4 @@ Finally the table of P_USER is created, the schema is applied and the data is po
 
 ![alt_text](docs/images/pgadmin-p_user-schema.png)
 
-
-In the application Python, in the settings : app_python/app_python/settings.py, change the ip address :
-```shell script
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'trailerplan',
-        'USER': 'postgres',
-        'PASSWORD': 'P@55w*rD',
-        'HOST': '172.25.0.2',
-        'PORT': '5432',
-    }
-} 
-```
-
-Make the migration in python
-```shell script
-python manage.py migrate --fake sessions zero
-python manage.py showmigrations
-python manage.py migrate --fake-initial
-```
-
-/!\ unfortunately, the docker container of the python app don't work. So you can remove the service app_python in 
-docker compoose, run it and launch the python app with ``` python manage.py runserver ``` in the app_python root dir.
+__Warning : in the template : lister-child.html, there is an address fixed to localhost with the port 8001, it will be parametized__ 
