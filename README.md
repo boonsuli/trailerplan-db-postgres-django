@@ -11,7 +11,7 @@ In this application python there is django, django rest, bootstrap and jquery. T
 - edit an user in the popup
 - save the user to database with ajax
 - modify the editing user in the list without refresh the page
-- api rest for : 
+- api rest on the url domain 'users', for : 
     - GET, list the users
     - GET, get an user
     - PUT, modify an user
@@ -31,6 +31,17 @@ the pop modal when we modify the user
 
 after clic on Save an request async is send to update in db and the field of the list is updated without refresh the page
 ![alt_text](docs/images/app-list-users-updated.png)
+
+The api run on ```http://localhost:8001/users```
+GET by user id
+![alt_text](docs/images/app-postman-get-user.png)
+
+GET all users
+![alt_text](docs/images/app-postman-get-users.png)
+
+PUT user
+![alt_text](docs/images/app-postman-put-user.png)
+
 
 First :
 ```shell script
